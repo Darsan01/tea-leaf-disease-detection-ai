@@ -1,0 +1,21 @@
+Custom CNN Classification Report
+================================
+
+Class names: ['BB', 'GL', 'RR', 'RSM']
+Class full names: ['BB - Brown Blight', 'GL - Healthy Leaf', 'RR - Red Rust', 'RSM - Red Spider Mite']
+
+Test Loss: 0.09007696062326431
+Test Accuracy: 0.9654255509376526
+Test Accuracy Percentage: 96.54255509376526
+Overall Accuracy Score: 0.9680851063829787
+
+                       precision    recall  f1-score   support
+
+    BB - Brown Blight       0.98      0.94      0.96       189
+    GL - Healthy Leaf       1.00      0.95      0.98       172
+        RR - Red Rust       0.98      1.00      0.99       207
+RSM - Red Spider Mite       0.91      0.98      0.94       184
+
+             accuracy                           0.97       752
+            macro avg       0.97      0.97      0.97       752
+         weighted avg       0.97      0.97      0.97       752

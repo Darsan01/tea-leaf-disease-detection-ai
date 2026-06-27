@@ -1,0 +1,21 @@
+MobileNetV2 Classification Report
+=================================
+
+Class names: ['BB', 'GL', 'RR', 'RSM']
+Class full names: ['BB - Brown Blight', 'GL - Healthy Leaf', 'RR - Red Rust', 'RSM - Red Spider Mite']
+
+Test Loss: 0.1624579131603241
+Test Accuracy: 0.938829779624939
+Test Accuracy Percentage: 93.8829779624939
+Overall Accuracy Score: 0.9375
+
+                       precision    recall  f1-score   support
+
+    BB - Brown Blight       0.85      0.94      0.89       183
+    GL - Healthy Leaf       0.97      0.99      0.98       179
+        RR - Red Rust       1.00      0.93      0.96       209
+RSM - Red Spider Mite       0.94      0.89      0.91       181
+
+             accuracy                           0.94       752
+            macro avg       0.94      0.94      0.94       752
+         weighted avg       0.94      0.94      0.94       752

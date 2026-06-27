@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Review Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eefaf0, #ffffff, #d9f7df);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 45px rgba(0, 80, 30, 0.15);
+            animation: fadeUp 0.7s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #136b32;
+            margin: 0;
+        }
+
+        h2 {
+            color: #136b32;
+        }
+
+        .subtitle {
+            color: #5c735f;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .stat-box {
+            background: #effff2;
+            border: 1px solid #cdeed4;
+            color: #136b32;
+            padding: 18px 22px;
+            border-radius: 16px;
+            text-align: center;
+            min-width: 160px;
+        }
+
+        .stat-number {
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .nav-area {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(10, 100, 45, 0.25);
+        }
+
+        .bulk-btn {
+            background: linear-gradient(135deg, #2d7ff9, #084e9b);
+        }
+
+        .report-btn {
+            background: linear-gradient(135deg, #6f42c1, #3b1d82);
+        }
+
+        .train-btn {
+            background: linear-gradient(135deg, #ff9f1c, #cc7000);
+        }
+
+        .training-status {
+            background: #fff8e6;
+            border-left: 5px solid #f0a500;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            color: #614900;
+            line-height: 1.6;
+        }
+
+        .training-status.completed {
+            background: #e8fff0;
+            border-left-color: #1f9d55;
+            color: #116b35;
+        }
+
+        .training-status.completed_with_warning {
+            background: #fff8e6;
+            border-left-color: #f0a500;
+            color: #614900;
+        }
+
+        .training-status.failed {
+            background: #ffecec;
+            border-left-color: #d62828;
+            color: #9d0208;
+        }
+
+        .training-status.running {
+            background: #e9f3ff;
+            border-left-color: #2d7ff9;
+            color: #084e9b;
+        }
+
+        .counts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .count-card {
+            background: #f7fff8;
+            border: 1px solid #dbeee0;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .count-card strong {
+            color: #136b32;
+        }
+
+        .flash {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background: #e8fff0;
+            color: #116b35;
+            border: 1px solid #bfeccc;
+        }
+
+        .flash.error {
+            background: #ffecec;
+            color: #b00020;
+            border: 1px solid #ffc9c9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 22px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #f8fff9;
+            border-radius: 18px;
+            padding: 15px;
+            border: 1px solid #dbeee0;
+            box-shadow: 0 8px 20px rgba(0, 80, 30, 0.08);
+            transition: 0.3s ease;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(0, 80, 30, 0.14);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: #111;
+            border-radius: 14px;
+            padding: 8px;
+        }
+
+        .filename {
+            font-weight: bold;
+            color: #123d22;
+            margin-top: 12px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .meta {
+            color: #607367;
+            font-size: 13px;
+            margin-top: 7px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #fff0bc;
+            color: #8a6400;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .form-area {
+            margin-top: 15px;
+            background: white;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid #e1efe5;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #cfe5d4;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            padding: 11px 14px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .approve-btn {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+        }
+
+        .reject-btn {
+            background: linear-gradient(135deg, #e63946, #9d0208);
+            color: white;
+        }
+
+        .empty {
+            background: #f6fff7;
+            border: 2px dashed #9bd9aa;
+            padding: 35px;
+            border-radius: 18px;
+            text-align: center;
+            color: #466b50;
+            margin-top: 30px;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            color: #607367;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header {
+                display: block;
+            }
+
+            .stat-box {
+                margin-top: 18px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div>
+                <h1>Admin Review Dashboard</h1>
+                <p class="subtitle">
+                    Review user-uploaded images that the model could not confidently detect.
+                    Approve correct images into training data, reject invalid images, bulk upload data,
+                    add new classes, view training reports, and retrain the model.
+                </p>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-number">{{ total_images }}</div>
+                <div>Pending Review</div>
+            </div>
+        </div>
+
+        <div class="nav-area">
+            <a href="/admin" class="nav-btn">Refresh Dashboard</a>
+            <a href="/admin/bulk-upload" class="nav-btn bulk-btn">Bulk Upload Images</a>
+            <a href="/admin/add-class" class="nav-btn">Add New Class</a>
+            <a href="/admin/training-report" class="nav-btn report-btn">Training Report</a>
+
+            <form action="/admin/start-training" method="POST" style="display:inline;"
+                onsubmit="return confirmTrainModel();">
+                <button type="submit" class="nav-btn train-btn">
+                    Train Model
+                </button>
+            </form>
+        </div>
+
+        {% if training_status %}
+        <div class="training-status {{ training_status.status }}">
+            <strong>Training Status:</strong> {{ training_status.status }}<br>
+            <strong>Message:</strong> {{ training_status.message }}<br>
+            <strong>Updated:</strong> {{ training_status.updated_at }}
+        </div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <h2>Approved Training Data Count</h2>
+
+        <div class="counts-grid">
+            {% for code, item in training_counts.items() %}
+            <div class="count-card">
+                <strong>{{ code }} - {{ item.name }}</strong><br>
+                {{ item.count }} images
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if images %}
+        <div class="grid">
+            {% for image in images %}
+            <div class="card">
+                <img src="{{ image.image_url }}" alt="{{ image.filename }}">
+
+                <div class="filename">
+                    {{ image.filename }}
+                </div>
+
+                <div class="meta">
+                    Uploaded: {{ image.uploaded_time }}<br>
+                    Size: {{ image.file_size_kb }} KB
+                </div>
+
+                <span class="badge">Needs Admin Review</span>
+
+                <div class="form-area">
+                    <form action="/admin/approve" method="POST">
+                        <input type="hidden" name="filename" value="{{ image.filename }}">
+
+                        <select name="class_code" required>
+                            <option value="">Select Correct Class</option>
+
+                            {% for code, name in class_names.items() %}
+                            <option value="{{ code }}">{{ code }} - {{ name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="btn approve-btn">
+                            Approve for Training
+                        </button>
+                    </form>
+
+                    <form action="/admin/reject" method="POST">
+                        <input type="hidden" name="filename" value="{{ image.filename }}">
+
+                        <button type="submit" class="btn reject-btn">
+                            Reject Image
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">
+            <h2>No Pending Images</h2>
+            <p>
+                Upload a new or uncertain image from the user app first.
+                If the model is not confident, it will appear here.
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="footer-note">
+            Admin App Port: 5001 |
+            Approved images go to: D:\tealef\training_data |
+            Rejected images go to: D:\tealef\admin_review\rejected |
+            Training logs: D:\tealef\retrain_logs
+        </div>
+
+    </div>
+
+    <script>
+        function confirmTrainModel() {
+            return confirm(
+                "Are you sure you want to start model training?\n\n" +
+                "This may take several minutes.\n" +
+                "Please do not close the admin app while training is running."
+            );
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Training Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eefaf0, #ffffff, #d9f7df);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 45px rgba(0, 80, 30, 0.15);
+        }
+
+        h1, h2 {
+            color: #136b32;
+        }
+
+        .subtitle {
+            color: #5c735f;
+            line-height: 1.6;
+        }
+
+        .nav-area {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .status-box {
+            background: #fff8e6;
+            border-left: 5px solid #f0a500;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 18px 0;
+            color: #614900;
+            line-height: 1.7;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .report-card {
+            background: #f7fff8;
+            border: 1px solid #dbeee0;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .report-card strong {
+            color: #136b32;
+        }
+
+        .path-box {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 14px;
+            word-break: break-all;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .class-counts {
+            background: #f7fff8;
+            border: 1px solid #dbeee0;
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 20px;
+        }
+
+        .class-counts table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .class-counts th,
+        .class-counts td {
+            padding: 12px;
+            border-bottom: 1px solid #dbeee0;
+            text-align: left;
+        }
+
+        .class-counts th {
+            color: #136b32;
+        }
+
+        .log-box {
+            background: #111;
+            color: #e8ffe8;
+            padding: 20px;
+            border-radius: 16px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        .empty {
+            background: #fff0f0;
+            border-left: 5px solid #d62828;
+            color: #8a0000;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Training Report</h1>
+
+    <p class="subtitle">
+        View the latest model training result, accuracy, dataset split, class counts,
+        model paths, and full training output log.
+    </p>
+
+    <div class="nav-area">
+        <a href="/admin" class="nav-btn">Back to Dashboard</a>
+        <a href="/admin/training-report" class="nav-btn">Refresh Report</a>
+    </div>
+
+    <div class="status-box">
+        <strong>Training Status:</strong> {{ training_status.status }}<br>
+        <strong>Message:</strong> {{ training_status.message }}<br>
+        <strong>Updated:</strong> {{ training_status.updated_at }}
+    </div>
+
+    {% if report.status == "success" %}
+        <h2>Latest Training Summary</h2>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <strong>Status</strong><br>
+                {{ report.status }}
+            </div>
+
+            <div class="report-card">
+                <strong>Trained At</strong><br>
+                {{ report.trained_at }}
+            </div>
+
+            <div class="report-card">
+                <strong>Total Images</strong><br>
+                {{ report.total_images }}
+            </div>
+
+            <div class="report-card">
+                <strong>Train Images</strong><br>
+                {{ report.train_images }}
+            </div>
+
+            <div class="report-card">
+                <strong>Validation Images</strong><br>
+                {{ report.validation_images }}
+            </div>
+
+            <div class="report-card">
+                <strong>Test Images</strong><br>
+                {{ report.test_images }}
+            </div>
+
+            <div class="report-card">
+                <strong>Test Accuracy</strong><br>
+                {{ "%.2f"|format(report.test_accuracy_percentage) }}%
+            </div>
+
+            <div class="report-card">
+                <strong>Test Loss</strong><br>
+                {{ "%.4f"|format(report.test_loss) }}
+            </div>
+        </div>
+
+        <h2>Model Files</h2>
+
+        <p><strong>Active Model Path</strong></p>
+        <div class="path-box">{{ report.active_model_path }}</div>
+
+        <p><strong>Version Model Path</strong></p>
+        <div class="path-box">{{ report.version_model_path }}</div>
+
+        <p><strong>Active Classes Path</strong></p>
+        <div class="path-box">{{ report.active_classes_path }}</div>
+
+        <div class="class-counts">
+            <h2>Class Counts</h2>
+
+            <table>
+                <tr>
+                    <th>Class Code</th>
+                    <th>Image Count</th>
+                </tr>
+
+                {% for code, count in report.class_counts.items() %}
+                    <tr>
+                        <td>{{ code }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    {% else %}
+        <div class="empty">
+            <strong>No successful training report found.</strong><br>
+            {{ report.message }}
+        </div>
+    {% endif %}
+
+    <h2>Training Output Log</h2>
+
+    <div class="log-box">{{ output_log }}</div>
+
+</div>
+
+</body>
+</html>

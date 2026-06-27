@@ -1,0 +1,13 @@
+
+Final Model Comparison Conclusion
+
+Three models were trained and evaluated for tea leaf disease classification:
+Custom CNN, MobileNetV2, and EfficientNetB0.
+
+The Custom CNN achieved the best performance with a test accuracy of 96.54%
+and a macro F1-score of 0.97. MobileNetV2 achieved 93.88% test accuracy,
+while EfficientNetB0 achieved 91.76% test accuracy.
+
+Based on the results, the Custom CNN was selected as the best model because
+it achieved the highest accuracy and most balanced performance across all
+four classes: Brown Blight, Healthy Leaf, Red Rust, and Red Spider Mite.

@@ -1,0 +1,34 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+env/
+
+# Dataset and uploaded images
+tealeafnet/
+training_data/
+admin_review/
+self_learning_uploads/
+
+# Logs
+retrain_logs/
+*.log
+
+# Large/generated model files
+model_versions/
+*.keras
+*.h5
+
+# Generated hash file
+known_image_hashes.json
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

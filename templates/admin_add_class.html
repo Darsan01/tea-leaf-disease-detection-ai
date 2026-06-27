@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Class</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eefaf0, #ffffff, #d9f7df);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 45px rgba(0, 80, 30, 0.15);
+            animation: fadeUp 0.7s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2 {
+            color: #136b32;
+        }
+
+        .subtitle {
+            color: #5c735f;
+            line-height: 1.6;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .form-box {
+            background: #f7fff8;
+            border: 2px dashed #22a05a;
+            border-radius: 18px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border-radius: 12px;
+            border: 1px solid #cfe5d4;
+            margin: 12px 0;
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 13px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .flash {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background: #e8fff0;
+            color: #116b35;
+            border: 1px solid #bfeccc;
+        }
+
+        .flash.error {
+            background: #ffecec;
+            color: #b00020;
+            border: 1px solid #ffc9c9;
+        }
+
+        .class-list {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .class-card {
+            background: #f7fff8;
+            border: 1px solid #dbeee0;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .class-card strong {
+            color: #136b32;
+        }
+
+        .note {
+            background: #fff8e6;
+            border-left: 5px solid #f0a500;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            color: #614900;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Add New Training Class</h1>
+
+    <p class="subtitle">
+        Add a new disease or category class. This creates a new training folder.
+        The model will only predict this new class after retraining.
+    </p>
+
+    <a href="/admin" class="nav-btn">Back to Dashboard</a>
+    <a href="/admin/bulk-upload" class="nav-btn">Bulk Upload Images</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="form-box">
+        <form action="/admin/add-class" method="POST">
+            <label><strong>Class Code</strong></label>
+            <input type="text" name="class_code" placeholder="Example: ANT" required>
+
+            <label><strong>Class Name</strong></label>
+            <input type="text" name="class_name" placeholder="Example: Anthracnose" required>
+
+            <button type="submit">Add New Class</button>
+        </form>
+    </div>
+
+    <div class="note">
+        Example: class code <strong>ANT</strong> and class name <strong>Anthracnose</strong>.
+        After adding, upload training images for this class, then retrain the model.
+    </div>
+
+    <h2>Current Classes</h2>
+
+    <div class="class-list">
+        {% for code, name in class_names.items() %}
+            <div class="class-card">
+                <strong>{{ code }}</strong><br>
+                {{ name }}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>

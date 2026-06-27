@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Bulk Upload</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eefaf0, #ffffff, #d9f7df);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 45px rgba(0, 80, 30, 0.15);
+            animation: fadeUp 0.7s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2 {
+            color: #136b32;
+        }
+
+        .subtitle {
+            color: #5c735f;
+            line-height: 1.6;
+        }
+
+        .upload-box {
+            background: #f7fff8;
+            border: 2px dashed #22a05a;
+            border-radius: 18px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        select, input[type="file"] {
+            width: 100%;
+            padding: 13px;
+            border-radius: 12px;
+            border: 1px solid #cfe5d4;
+            margin: 12px 0;
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 13px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(10, 100, 45, 0.25);
+        }
+
+        .nav-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .flash {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background: #e8fff0;
+            color: #116b35;
+            border: 1px solid #bfeccc;
+        }
+
+        .flash.error {
+            background: #ffecec;
+            color: #b00020;
+            border: 1px solid #ffc9c9;
+        }
+
+        .counts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .count-card {
+            background: #f7fff8;
+            border: 1px solid #dbeee0;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .count-card strong {
+            color: #136b32;
+        }
+
+        .note {
+            background: #fff8e6;
+            border-left: 5px solid #f0a500;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            color: #614900;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Bulk Upload Training Images</h1>
+
+    <p class="subtitle">
+        Upload multiple images for one selected class. These images will be added to the training data folder.
+    </p>
+
+    <a href="/admin" class="nav-btn">Back to Dashboard</a>
+    <a href="/admin/bulk-upload" class="nav-btn">Refresh</a>
+    <a href="/admin/add-class" class="nav-btn">Add New Class</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="upload-box">
+        <form action="/admin/bulk-upload" method="POST" enctype="multipart/form-data">
+            <label><strong>Select Class</strong></label>
+
+            <select name="class_code" required>
+                <option value="">Select Training Class</option>
+
+                {% for code, name in class_names.items() %}
+                    <option value="{{ code }}">{{ code }} - {{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <label><strong>Select Multiple Images</strong></label>
+
+            <input type="file" name="images" accept="image/*" multiple required>
+
+            <button type="submit">Upload Images</button>
+        </form>
+    </div>
+
+    <div class="note">
+        Important: Upload only correct images for the selected class.
+        Example: If you choose GL - Healthy Leaf, only upload healthy tea leaf images.
+    </div>
+
+    <h2>Current Training Data Count</h2>
+
+    <div class="counts-grid">
+        {% for code, item in training_counts.items() %}
+            <div class="count-card">
+                <strong>{{ code }} - {{ item.name }}</strong><br>
+                {{ item.count }} images
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>

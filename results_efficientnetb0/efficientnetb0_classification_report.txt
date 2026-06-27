@@ -1,0 +1,21 @@
+EfficientNetB0 Classification Report
+===================================
+
+Class names: ['BB', 'GL', 'RR', 'RSM']
+Class full names: ['BB - Brown Blight', 'GL - Healthy Leaf', 'RR - Red Rust', 'RSM - Red Spider Mite']
+
+Test Loss: 0.21034716069698334
+Test Accuracy: 0.917553186416626
+Test Accuracy Percentage: 91.7553186416626
+Overall Accuracy Score: 0.9175531914893617
+
+                       precision    recall  f1-score   support
+
+    BB - Brown Blight       0.94      0.78      0.85       183
+    GL - Healthy Leaf       0.98      0.99      0.98       179
+        RR - Red Rust       1.00      0.91      0.95       209
+RSM - Red Spider Mite       0.79      0.99      0.88       181
+
+             accuracy                           0.92       752
+            macro avg       0.93      0.92      0.92       752
+         weighted avg       0.93      0.92      0.92       752

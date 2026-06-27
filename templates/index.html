@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tea Leaf Disease Detection</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dfffe3, #f7fff7, #c8f5d0);
+            background-size: 200% 200%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            animation: backgroundMove 8s ease infinite alternate;
+        }
+
+        @keyframes backgroundMove {
+            from {
+                background-position: left;
+            }
+
+            to {
+                background-position: right;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0, 80, 30, 0.18);
+            animation: fadeUp 0.8s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .leaf-icon {
+            font-size: 58px;
+            animation: leafFloat 2.5s ease-in-out infinite;
+        }
+
+        @keyframes leafFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-5deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        h1 {
+            margin: 10px 0;
+            color: #136b32;
+            font-size: 34px;
+        }
+
+        h2 {
+            color: #136b32;
+        }
+
+        .subtitle {
+            color: #4b6b55;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .upload-card {
+            border: 2px dashed #22a05a;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            background: #f4fff6;
+            transition: 0.3s ease;
+        }
+
+        .upload-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 30px rgba(34, 160, 90, 0.18);
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid #d8eadc;
+        }
+
+        button {
+            background: linear-gradient(135deg, #1f9d55, #0b6b35);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(10, 100, 45, 0.25);
+        }
+
+        #preview {
+            max-width: 280px;
+            max-height: 220px;
+            margin-top: 20px;
+            border-radius: 16px;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            animation: fadeUp 0.5s ease;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            background: #effff2;
+            border-left: 6px solid #1f9d55;
+            animation: fadeUp 0.7s ease;
+        }
+
+        .result.warning {
+            background: #fff8e6;
+            border-left-color: #f0a500;
+        }
+
+        .result.error {
+            background: #fff0f0;
+            border-left-color: #d62828;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: #daf8e3;
+            color: #0c6b35;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .badge-warning {
+            background: #fff0bc;
+            color: #926700;
+        }
+
+        .confidence {
+            font-size: 30px;
+            color: #0b6b35;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 14px;
+            padding: 15px;
+            border: 1px solid #e1efe5;
+        }
+
+        .info-box strong {
+            color: #136b32;
+        }
+
+        .advice {
+            background: white;
+            padding: 16px;
+            border-radius: 14px;
+            margin-top: 15px;
+            color: #34513c;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            margin-top: 20px;
+            background: #ffecec;
+            color: #b00020;
+            padding: 15px;
+            border-radius: 12px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 14px;
+        }
+
+        th {
+            background: #13753a;
+            color: white;
+            padding: 13px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e5efe8;
+            text-align: center;
+            background: white;
+        }
+
+        tr:hover td {
+            background: #f4fff6;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 12px;
+            border-radius: 20px;
+            background: #e3eee5;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #22a05a, #0b6b35);
+            border-radius: 20px;
+            transition: width 1s ease;
+        }
+
+        @keyframes growBar {
+            from {
+                width: 0;
+            }
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            text-align: center;
+            color: #5d7a65;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .confidence {
+                font-size: 24px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="leaf-icon">🍃</div>
+            <h1>Tea Leaf Disease Detection</h1>
+            <p class="subtitle">
+                Upload a clear tea leaf image. The system checks whether the image looks like a leaf first,
+                then predicts Brown Blight, Healthy Leaf, Red Rust, or Red Spider Mite.
+            </p>
+        </div>
+
+        <div class="upload-card">
+            <form action="/predict" method="POST" enctype="multipart/form-data">
+                <h2>Upload Tea Leaf Image</h2>
+                <p>Please upload only clear tea leaf images for best results.</p>
+
+                <input type="file" name="image" id="imageInput" accept="image/*" required>
+
+                <br>
+
+                <img id="preview" alt="Image preview">
+
+                <br><br>
+
+                <button type="submit">Classify Image</button>
+            </form>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if result %}
+
+        {% if result.prediction_made %}
+        <div class="result">
+            <span class="badge">
+                {{ result.decision_type if result.decision_type else "Prediction Successful" }}
+            </span>
+
+            <h2>{{ result.predicted_disease }}</h2>
+
+            <div class="confidence">
+                Confidence: {{ result.confidence }}%
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <strong>Uploaded Image:</strong><br>
+                    {{ filename }}
+                </div>
+
+                <div class="info-box">
+                    <strong>Class Code:</strong><br>
+                    {{ result.predicted_class_code }}
+                </div>
+
+                <div class="info-box">
+                    <strong>Leaf Image Score:</strong><br>
+                    {{ result.leaf_image_score }}%
+                </div>
+
+                <div class="info-box">
+                    <strong>Top Score Gap:</strong><br>
+                    {{ result.top2_score_gap if result.top2_score_gap is defined else "N/A" }}%
+                </div>
+            </div>
+
+            <div class="advice">
+                <strong>Recommendation:</strong><br>
+                {{ result.advice }}
+            </div>
+
+            <p><strong>System Note:</strong> {{ result.warning }}</p>
+        </div>
+        {% else %}
+        <div class="result warning">
+            <span class="badge badge-warning">
+                {{ result.decision_type if result.decision_type else "Prediction Not Accepted" }}
+            </span>
+
+            <h2>{{ result.predicted_disease }}</h2>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <strong>Uploaded Image:</strong><br>
+                    {{ filename }}
+                </div>
+
+                <div class="info-box">
+                    <strong>Reason:</strong><br>
+                    {{ result.warning }}
+                </div>
+
+                <div class="info-box">
+                    <strong>Leaf Image Score:</strong><br>
+                    {{ result.leaf_image_score }}%
+                </div>
+
+                <div class="info-box">
+                    <strong>Confidence:</strong><br>
+                    {{ result.confidence }}%
+                </div>
+            </div>
+
+            <div class="advice">
+                {{ result.advice }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if result.all_class_scores %}
+        <div class="result">
+            <h2>Class Probability Scores</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Class Code</th>
+                        <th>Class Name</th>
+                        <th>Score</th>
+                        <th>Visual</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in result.all_class_scores %}
+                    {% set score_value = item["score"] | float %}
+                    <tr>
+                        <td>{{ item["class_code"] }}</td>
+                        <td>{{ item["class_name"] }}</td>
+                        <td>{{ "%.2f"|format(score_value) }}%</td>
+                        <td>
+                            <div class="score-bar">
+                                <div class="score-fill" data-score="{{ score_value }}"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% endif %}
+
+        <div class="footer-note">
+            Model: Custom CNN |
+            Classes: Brown Blight, Healthy Leaf, Red Rust, Red Spider Mite |
+            Future improvement: Unknown / Not Tea Leaf class
+        </div>
+
+    </div>
+
+    <script>
+        const imageInput = document.getElementById("imageInput");
+        const preview = document.getElementById("preview");
+
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    preview.setAttribute("src", event.target.result);
+                    preview.style.display = "inline-block";
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const scoreBars = document.querySelectorAll(".score-fill");
+
+            scoreBars.forEach(function (bar) {
+                const score = parseFloat(bar.dataset.score) || 0;
+                const safeScore = Math.max(0, Math.min(score, 100));
+
+                setTimeout(function () {
+                    bar.style.width = safeScore + "%";
+                }, 200);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
